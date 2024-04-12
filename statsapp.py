@@ -4,7 +4,7 @@ import pandas as pd
 st.title("Charlotte Men's Club Basketball 2023-24 Stats App")
 
 # Reading in the data from local desktop 
-df = pd.read_csv('/Users/daivik/Desktop/streamlit app/mcbb_stats.csv')
+df = pd.read_csv('/Users/daivik/Desktop/streamlit app/m2_stats.csv')
 
 # Selecting a player
 player_selection = st.selectbox(
@@ -63,3 +63,10 @@ if st.button("Calculate All Stats"):
     
 
 # Sidebar information
+st.sidebar.markdown("<h1 style='text-align: center; font-size: 24px;'>We OVER Me</h1>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>The motto for the Charlotte Men's Club Basketball Team has stuck for the past two seasons, and the team has well fulfilled the meaning.</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<br>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>Boasting a 24-3 Record and Ranked Top 10 in the National Club Basketball Rankings, This Team Has Made Its Mark.</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<br>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>This Is a Comprehensive Stats App to See the Numbers View of the Team. Created by Daivik Nambiar.</p>", unsafe_allow_html=True)
+st.sidebar.image("/Users/daivik/Downloads/Charlotte_49ers_logo.svg.png", use_column_width=True)
