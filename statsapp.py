@@ -4,13 +4,15 @@ import pandas as pd
 st.title("Charlotte Men's Club Basketball 2023-24 Stats App")
 
 # Reading in the data from local desktop 
-df = pd.read_csv('/Users/daivik/Desktop/streamlit app/m2_stats.csv')
+df = pd.read_csv('/Users/daivik/Desktop/streamlit app/mcbb2_stats.csv')
 
 # Selecting a player
 player_selection = st.selectbox(
-    "Select a player",
-    [''] + df['Name'].unique()
+    "Select a player to view per game averages or season highs",
+    [''] + df['Name'].unique(),
+    help="Select a player from the list"
 )
+
 
 # Cleaning data that was not needed from csv 
 df['2FG %'] = df['2FG %'].str.strip('%')
@@ -19,6 +21,8 @@ df['TFG %'] = df['TFG %'].str.strip('%')
 df['FT %'] = df['FT %'].str.strip('%')
 df.drop(range(17, df.shape[0], 18))
 
+# Visual color for buttons 
+st.markdown('<style>div.row-widget.stButton > button {font-weight: bold; color: #ff5733; border: 2px solid black;}</style>', unsafe_allow_html=True)
 
 # Spacing out columns for better viewing
 col1, col2, col3 = st.columns(3)
@@ -43,25 +47,69 @@ def misc_stats(player_name, stat, stat2, stat3):
     average_value3 = average_stat(player_name, stat3)
 
 # Displaying all stats 
-if st.button("Calculate All Stats"):
-    col1.write(f"Averages for {player_selection.title()}:")
-    col1.write(f"PPG: {average_stat(player_selection, 'PTS'):.1f}")
-    col1.write(f"RPG: {average_stat(player_selection, 'TOTAL REB'):.1f}")
-    col1.write(f"APG: {average_stat(player_selection, 'AST'):.1f}")
-    col1.write(f"BPG: {average_stat(player_selection, 'BLK'):.1f}")
-    col1.write(f"SPG: {average_stat(player_selection, 'STL'):.1f}")
-    col1.write(f"TOV: {average_stat(player_selection, 'TOV'):.1f}")
-    col2.write(f"Shooting Splits for {player_selection.title()}:")
-    col2.write(f"2FG: {average_stat(player_selection, '2FG %'):.1f}%")
-    col2.write(f"3FG: {average_stat(player_selection, '3FG %'):.1f}%")
-    col2.write(f"TFG: {average_stat(player_selection, 'TFG %'):.1f}%")
-    col2.write(f"FT: {average_stat(player_selection, 'FT %'):.1f}%")
-    col3.write(f"Miscellaneous stats for {player_selection.title()}:")
-    col3.write(f"Average Game Score: {average_stat(player_selection, 'G-SCORE'):.1f}")
-    col3.write(f"Hustle Plays (per game): {average_stat(player_selection, 'HUSTLE PLAYS'):.1f}")
-    col3.write(f"Offensive Rebounds Allowed (per game): {average_stat(player_selection, 'O-REB ALLOW'):.1f}")
+with col1:
+    if st.button("Calculate Averages"):
+        st.write(f"##### **Averages:**")
+        st.write(f"PPG: {average_stat(player_selection, 'PTS'):.1f}")
+        st.write(f"RPG: {average_stat(player_selection, 'TOTAL REB'):.1f}")
+        st.write(f"APG: {average_stat(player_selection, 'AST'):.1f}")
+        st.write(f"BPG: {average_stat(player_selection, 'BLK'):.1f}")
+        st.write(f"SPG: {average_stat(player_selection, 'STL'):.1f}")
+        st.write(f"TOPG: {average_stat(player_selection, 'TOV'):.1f}")
+        col2.write(f"##### **Shooting Splits:**")
+        col2.write(f"2FG: {average_stat(player_selection, '2FG %'):.1f}%")
+        col2.write(f"3FG: {average_stat(player_selection, '3FG %'):.1f}%")
+        col2.write(f"TFG: {average_stat(player_selection, 'TFG %'):.1f}%")
+        col2.write(f"FT: {average_stat(player_selection, 'FT %'):.1f}%")
+        col2.write(f"##### **Miscellaneous Stats:**")
+        col2.write(f"Average Game Score: {average_stat(player_selection, 'G-SCORE'):.1f}")
+        col2.write(f"Hustle Plays (per game): {average_stat(player_selection, 'HUSTLE PLAYS'):.1f}")
+        #col3.write(f"Offensive Rebounds Allowed (per game): {average_stat(player_selection, 'O-REB ALLOW'):.1f}")
     
+# function (4) to calculate season highs
+def max_stat(player_name, stat):
+    player_data = df[df['Name'].str.lower() == player_name.lower()]
+    valid_data = player_data[pd.to_numeric(player_data[stat], errors='coerce').notna()]
+    max_value = valid_data[stat].astype(float).max()
+    game_index = valid_data[valid_data[stat].astype(float) == max_value].index[0]
+    game_info = df.loc[game_index, ['VERSUS', 'DATE']]
+    return max_value, game_info['VERSUS'], game_info['DATE']
 
+def season_high(player_name, stat, stat2, stat3, stat4, stat5):
+    max_value, versus, date = max_stat(player_name, stat)
+    max_value2, versus2, date2 = max_stat(player_name, stat2)
+    max_value3, versus3, date3 = max_stat(player_name, stat3)
+    max_value4, versus4, date4 = max_stat(player_name, stat4)
+    max_value5, versus5, date5 = max_stat(player_name, stat5)
+    return max_value, versus, date, max_value2, versus2, date2, max_value3, versus3, date3, max_value4, versus4, date4, max_value5, versus5, date5
+
+
+# Display season highs
+if player_selection:
+        with col3:
+            if st.button("Display Season Highs", key="display_season_highs_button"):
+                max_value, versus, date, max_value2, versus2, date2, max_value3, versus3, date3, max_value4, versus4, date4, max_value5, versus5, date5 = season_high(player_selection, 'PTS', 'AST', 'TOTAL REB', 'STL', 'BLK')
+                col1.write(f"#### **{player_selection} Season Highs:**")
+                col1.write(f"**Points:** {max_value:.0f} vs. {versus} on {date}")
+                col1.write(f"**Assists:** {max_value2:.0f} vs. {versus2} on {date2}")
+                col1.write(f"**Rebounds:** {max_value3:.0f} vs. {versus3} on {date3}")
+                col2.write("")
+                col2.write("")
+                col2.write("")
+                col2.write("")
+                col2.write(f"**Steals:** {max_value4:.0f} vs. {versus4} on {date4}")
+                col2.write(f"**Blocks:** {max_value5:.0f} vs. {versus5} on {date5}")
+
+
+    
+   
+# Visual line to divide the two sections    
+st.markdown('<hr style="border: 1px solid #ddd;">', unsafe_allow_html=True)
+ 
+if st.button("Your New Button", key="new_button"):
+    # Add functionality here when the new button is clicked
+    st.write("You clicked the new button!")
+    
 # Sidebar information
 st.sidebar.markdown("<h1 style='text-align: center; font-size: 24px;'>We OVER Me</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>The motto for the Charlotte Men's Club Basketball Team has stuck for the past two seasons, and the team has well fulfilled the meaning.</p>", unsafe_allow_html=True)
