@@ -4,22 +4,22 @@ import pandas as pd
 st.title("Charlotte Men's Club Basketball 2023-24 Stats App")
 
 # Reading in the data from local desktop 
-df = pd.read_csv('/Users/daivik/Desktop/streamlit app/mcbb2_stats.csv')
-
-# Selecting a player
-player_selection = st.selectbox(
-    "Select a player to view per game averages or season highs",
-    [''] + df['Name'].unique(),
-    help="Select a player from the list"
-)
-
-
+df = pd.read_csv('/Users/daivik/Desktop/streamlit app/mcbb3_stats.csv')
 # Cleaning data that was not needed from csv 
 df['2FG %'] = df['2FG %'].str.strip('%')
 df['3FG %'] = df['3FG %'].str.strip('%')
 df['TFG %'] = df['TFG %'].str.strip('%')
 df['FT %'] = df['FT %'].str.strip('%')
-df.drop(range(17, df.shape[0], 18))
+df = df.drop(range(17, df.shape[0], 18))
+
+
+# Selecting a player
+player_selection = st.selectbox(
+    "Select a player to view per game averages or season highs",
+    df['Name'].unique(),
+    help="Select a player from the list"
+)
+
 
 # Visual color for buttons 
 st.markdown('<style>div.row-widget.stButton > button {font-weight: bold; color: #ff5733; border: 2px solid black;}</style>', unsafe_allow_html=True)
@@ -101,15 +101,6 @@ if player_selection:
                 col2.write(f"**Blocks:** {max_value5:.0f} vs. {versus5} on {date5}")
 
 
-    
-   
-# Visual line to divide the two sections    
-st.markdown('<hr style="border: 1px solid #ddd;">', unsafe_allow_html=True)
- 
-if st.button("Your New Button", key="new_button"):
-    # Add functionality here when the new button is clicked
-    st.write("You clicked the new button!")
-    
 # Sidebar information
 st.sidebar.markdown("<h1 style='text-align: center; font-size: 24px;'>We OVER Me</h1>", unsafe_allow_html=True)
 st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>The motto for the Charlotte Men's Club Basketball Team has stuck for the past two seasons, and the team has well fulfilled the meaning.</p>", unsafe_allow_html=True)
@@ -117,4 +108,56 @@ st.sidebar.markdown("<br>", unsafe_allow_html=True)
 st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>Boasting a 24-3 Record and Ranked Top 10 in the National Club Basketball Rankings, This Team Has Made Its Mark.</p>", unsafe_allow_html=True)
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>This Is a Comprehensive Stats App to See the Numbers View of the Team. Created by Daivik Nambiar.</p>", unsafe_allow_html=True)
-st.sidebar.image("/Users/daivik/Downloads/Charlotte_49ers_logo.svg.png", use_column_width=True)
+st.sidebar.image("/Users/daivik/Downloads/Charlotte_49ers_logo.svg.png", use_column_width=True)  
+   
+# Visual line to divide the two sections    
+st.markdown('<hr style="border: 2px solid #ddd;">', unsafe_allow_html=True)
+ 
+# Team Stats Section 
+st.write("### Team Stats")
+
+
+charlotte_stats = df[df['Name'] == 'CHARLOTTE']
+opponent_stats = df[df['Name'] == 'Opponent']
+
+# Determine the minimum length of the two DataFrames
+min_length = min(len(charlotte_stats), len(opponent_stats))
+
+for i in range(min_length):
+    charlotte_row = charlotte_stats.iloc[i]
+    charlotte_name = charlotte_row['Name']
+    charlotte_pts = charlotte_row['PTS']
+    date = charlotte_row['DATE']
+    opponent_row = opponent_stats.iloc[i]
+    opponent_name = opponent_row['VERSUS']
+    opponent_pts = opponent_row['PTS']
+    
+    total_rows = len(df)
+
+    # Display game results and buttons
+    for i in range(total_rows // 17 + 1): 
+        start_index = i * 17
+        end_index = (i + 1) * 17
+        
+        if end_index > total_rows:
+            end_index = total_rows
+        
+        if start_index < total_rows:
+            charlotte_row = charlotte_stats.iloc[i]
+            charlotte_name = charlotte_row['Name']
+            charlotte_pts = charlotte_row['PTS']
+            date = charlotte_row['DATE']
+            opponent_row = opponent_stats.iloc[i]
+            opponent_name = opponent_row['VERSUS']
+            opponent_pts = opponent_row['PTS']
+            
+            # Display the game result
+            st.write(f"{date} - {charlotte_name}: {charlotte_pts}, {opponent_name}: {opponent_pts}")
+            
+            # Add a button for this game result
+            if st.button("Details", key=f"button{i + 1}"):
+                st.write(df.iloc[start_index:end_index])
+
+
+
+
