@@ -108,7 +108,7 @@ st.sidebar.markdown("<br>", unsafe_allow_html=True)
 st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>Boasting a 24-3 Record and Ranked Top 10 in the National Club Basketball Rankings, This Team Has Made Its Mark.</p>", unsafe_allow_html=True)
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 st.sidebar.markdown("<p style='font-size: 16px; text-align: center;'>This Is a Comprehensive Stats App to See the Numbers View of the Team. Created by Daivik Nambiar.</p>", unsafe_allow_html=True)
-st.sidebar.image("/Users/daivik/Downloads/Charlotte_49ers_logo.svg.png", use_column_width=True)  
+st.sidebar.image("./Charlotte_49ers_logo.svg.png", use_column_width=True)  
    
 # Visual line to divide the two sections    
 st.markdown('<hr style="border: 2px solid #ddd;">', unsafe_allow_html=True)
