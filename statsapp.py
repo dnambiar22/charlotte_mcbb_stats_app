@@ -115,7 +115,7 @@ st.markdown('<hr style="border: 2px solid #ddd;">', unsafe_allow_html=True)
  
 # Team Stats Section 
 st.write("### Team Stats")
-st.write("<small> Click the buttons below each line to view box scores. **(Note: Some box scores may be incomplete)**")
+st.write("<small>Click the buttons below each line to view box scores. **(Note: Some box scores may be incomplete)**")
 
 charlotte_stats = df[df['Name'] == 'CHARLOTTE']
 opponent_stats = df[df['Name'] == 'Opponent']
