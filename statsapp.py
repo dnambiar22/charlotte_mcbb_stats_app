@@ -4,7 +4,7 @@ import pandas as pd
 st.title("Charlotte Men's Club Basketball 2023-24 Stats App")
 
 # Reading in the data from local desktop 
-df = pd.read_csv('/Users/daivik/Desktop/streamlit app/mcbb3_stats.csv')
+df = pd.read_csv('./mcbb_stats.csv')
 # Cleaning data that was not needed from csv 
 df['2FG %'] = df['2FG %'].str.strip('%')
 df['3FG %'] = df['3FG %'].str.strip('%')
